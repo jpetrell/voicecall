@@ -150,6 +150,13 @@ bool OfonoVoiceCallHandler::isForwarded() const
     return false;
 }
 
+//XXX Monitor VoiceCallManager RemoteHeld signal
+bool OfonoVoiceCallHandler::isRemoteHeld() const
+{
+    TRACE
+    return false;
+}
+
 AbstractVoiceCallHandler::VoiceCallStatus OfonoVoiceCallHandler::status() const
 {
     TRACE

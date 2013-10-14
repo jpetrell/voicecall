@@ -49,7 +49,7 @@ public:
     TelepathyHandlerPrivate(TelepathyHandler *q, const QString &id, Tp::ChannelPtr c, const QDateTime &s, TelepathyProvider *p)
         : q_ptr(q), handlerId(id), provider(p), startedAt(s), status(AbstractVoiceCallHandler::STATUS_NULL),
           channel(c), fsChannel(NULL), servicePointInterface(NULL), duration(0), durationTimerId(-1), isEmergency(false),
-          isForwarded(false)
+          isForwarded(false), isRemoteHeld(false)
     { /* ... */ }
 
     void listenToEmergencyStatus()
@@ -94,6 +94,7 @@ public:
     QElapsedTimer elapsedTimer;
     bool isEmergency;
     bool isForwarded;
+    bool isRemoteHeld;
 };
 
 TelepathyHandler::TelepathyHandler(const QString &id, Tp::ChannelPtr channel, const QDateTime &userActionTime, TelepathyProvider *provider)
@@ -214,6 +215,14 @@ bool TelepathyHandler::isForwarded() const
     Q_D(const TelepathyHandler);
     if(!d->channel->isReady()) return false;
     return d->isForwarded;
+}
+
+bool TelepathyHandler::isRemoteHeld() const
+{
+    TRACE
+    Q_D(const TelepathyHandler);
+    if(!d->channel->isReady()) return false;
+    return d->isRemoteHeld;
 }
 
 AbstractVoiceCallHandler::VoiceCallStatus TelepathyHandler::status() const
@@ -716,6 +725,12 @@ void TelepathyHandler::onStreamedMediaChannelCallStateChanged(uint, uint state)
         d->isForwarded = forwarded;
         DEBUG_T(QString("Call forwarded: ") + (forwarded ? "true" : "false"));
         emit forwardedChanged();
+    }
+    bool remoteHeld = state & Tp::ChannelCallStateHeld;
+    if (remoteHeld != d->isRemoteHeld) {
+        d->isRemoteHeld = remoteHeld;
+        DEBUG_T(QString("Call remote held: ") + (remoteHeld ? "true" : "false"));
+        emit remoteHeldChanged();
     }
 }
 

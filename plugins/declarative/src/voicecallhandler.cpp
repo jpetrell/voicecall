@@ -70,6 +70,7 @@ void VoiceCallHandler::initialize(bool notifyError)
         success &= (bool)QObject::connect(d->interface, SIGNAL(emergencyChanged()), SIGNAL(emergencyChanged()));
         success &= (bool)QObject::connect(d->interface, SIGNAL(multipartyChanged()), SIGNAL(multipartyChanged()));
         success &= (bool)QObject::connect(d->interface, SIGNAL(forwardedChanged()), SIGNAL(forwardedChanged()));
+        success &= (bool)QObject::connect(d->interface, SIGNAL(remoteHeldChanged()), SIGNAL(remoteHeldChanged()));
     }
 
     if(!(d->connected = success))
@@ -166,7 +167,7 @@ bool VoiceCallHandler::isMultiparty() const
 {
     TRACE
     Q_D(const VoiceCallHandler);
-    return d->interface->property("isMultparty").toBool();
+    return d->interface->property("isMultiparty").toBool();
 }
 
 /*!
@@ -177,6 +178,16 @@ bool VoiceCallHandler::isForwarded() const
     TRACE
     Q_D(const VoiceCallHandler);
     return d->interface->property("isForwarded").toBool();
+}
+
+/*!
+  Returns this voice calls' remote held flag property.
+ */
+bool VoiceCallHandler::isRemoteHeld() const
+{
+    TRACE
+    Q_D(const VoiceCallHandler);
+    return d->interface->property("isRemoteHeld").toBool();
 }
 
 /*!

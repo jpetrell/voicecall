@@ -58,6 +58,7 @@ VoiceCallHandlerDBusAdapter::VoiceCallHandlerDBusAdapter(AbstractVoiceCallHandle
     QObject::connect(d->handler, SIGNAL(emergencyChanged()), SIGNAL(emergencyChanged()));
     QObject::connect(d->handler, SIGNAL(multipartyChanged()), SIGNAL(multipartyChanged()));
     QObject::connect(d->handler, SIGNAL(forwardedChanged()), SIGNAL(forwardedChanged()));
+    QObject::connect(d->handler, SIGNAL(remoteHeldChanged()), SIGNAL(remoteHeldChanged()));
 }
 
 VoiceCallHandlerDBusAdapter::~VoiceCallHandlerDBusAdapter()
@@ -156,6 +157,16 @@ bool VoiceCallHandlerDBusAdapter::isEmergency() const
     TRACE
     Q_D(const VoiceCallHandlerDBusAdapter);
     return d->handler->isEmergency();
+}
+
+/*!
+  Returns this voice calls' remote held flag property.
+*/
+bool VoiceCallHandlerDBusAdapter::isRemoteHeld() const
+{
+    TRACE
+    Q_D(const VoiceCallHandlerDBusAdapter);
+    return d->handler->isRemoteHeld();
 }
 
 /*!
